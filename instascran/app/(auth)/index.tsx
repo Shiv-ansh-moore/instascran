@@ -1,14 +1,23 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { useRouter } from "expo-router";
+
+// Make sure the path matches where you saved the file!
+// If using Expo Router default structure:
+const logoImage = require("../../assets/images/logo.png"); 
+// Or if you kept the long name: require("../../assets/images/Black_White_Bold_Modern_Studio_Logo.png")
 
 const index = () => {
   const router = useRouter();
+
   return (
     <View style={styles.container}>
-      {/* Mimicking the Logo from the screenshot */}
+      {/* Logo Image */}
       <View style={styles.logoContainer}>
-        <Text style={styles.logoText}>Scran</Text>
-        <Text style={styles.subLogoText}>INSTA</Text>
+        <Image 
+            source={logoImage} 
+            style={styles.logoImage} 
+            resizeMode="contain"
+        />
       </View>
 
       <View style={styles.contentContainer}>
@@ -31,35 +40,29 @@ const index = () => {
     </View>
   );
 };
+
 export default index;
 
 // --- STYLES ---
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-between", // Spacing elements out
+    justifyContent: "space-between", 
     padding: 30,
-    backgroundColor: "#FFF5F9", // Pastel Pink Background
+    backgroundColor: "#FFEBFE", // Pastel Pink Background
     paddingTop: 100,
     paddingBottom: 50,
   },
   logoContainer: {
     alignItems: "center",
-    transform: [{ rotate: "-5deg" }], // Slight tilt like the screenshot
+    justifyContent: "center",
+    // I removed the rotation because the image usually looks better straight,
+    // but you can uncomment this if you want the image tilted:
+    // transform: [{ rotate: "-5deg" }], 
   },
-  logoText: {
-    fontFamily: "SemiBold", // Ensure this font is loaded, ideally a rounded font
-    color: "#8CD9B1", // Mint Green
-    fontSize: 60,
-    lineHeight: 70,
-  },
-  subLogoText: {
-    fontFamily: "Regular",
-    color: "#8CD9B1",
-    fontSize: 18,
-    position: "absolute",
-    right: -10,
-    top: 10,
+  logoImage: {
+    width: 280,  // Adjust width based on how big you want it
+    height: 150, // Adjust height based on the image aspect ratio
   },
   contentContainer: {
     width: "100%",
@@ -72,10 +75,10 @@ const styles = StyleSheet.create({
     fontFamily: "Regular",
   },
   button: {
-    backgroundColor: "#8CD9B1", // Mint Green Button
+    backgroundColor: "#8CD9B1", 
     width: "100%",
     height: 55,
-    borderRadius: 15, // Soft rounded corners
+    borderRadius: 15, 
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 15,
@@ -91,7 +94,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   secondaryButton: {
-    backgroundColor: "#FFFFFF", // White for secondary
+    backgroundColor: "#FFFFFF", 
     width: "100%",
     height: 55,
     borderRadius: 15,
@@ -102,7 +105,7 @@ const styles = StyleSheet.create({
   },
   secondaryButtonText: {
     fontFamily: "SemiBold",
-    color: "#555", // Dark grey text
+    color: "#555", 
     fontSize: 18,
   },
 });
