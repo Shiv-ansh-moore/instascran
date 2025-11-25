@@ -5,11 +5,11 @@ import {
   Text,
   TextInput,
   View,
-  StyleSheet, // <<< IMPORT
-  TouchableOpacity, // <<< IMPORT
-  ActivityIndicator, // <<< IMPORT
-  KeyboardAvoidingView, // <<< IMPORT
-  Platform, // <<< IMPORT
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { supabase } from "../../lib/supabaseClient";
 
@@ -34,13 +34,16 @@ const logIn = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
-      <Text style={styles.title}>Welcome Back</Text>
+      <View style={styles.headerContainer}>
+        <Text style={styles.logoText}>Scran</Text>
+        <Text style={styles.title}>Welcome back!</Text>
+      </View>
 
       <View style={styles.inputContainer}>
         <TextInput
-          style={styles.input} // <<< STYLE
-          placeholder="Enter your email"
-          placeholderTextColor="rgba(255,255,255,0.5)" // <<< STYLE
+          style={styles.input}
+          placeholder="email@domain.com"
+          placeholderTextColor="#C4C4C4"
           keyboardType="email-address"
           autoCapitalize="none"
           autoCorrect={false}
@@ -48,9 +51,9 @@ const logIn = () => {
           onChangeText={(text) => setEmail(text)}
         />
         <TextInput
-          style={styles.input} // <<< STYLE
-          placeholder="Enter your password"
-          placeholderTextColor="rgba(255,255,255,0.5)" // <<< STYLE
+          style={styles.input}
+          placeholder="Password"
+          placeholderTextColor="#C4C4C4"
           secureTextEntry={true}
           autoCapitalize="none"
           autoCorrect={false}
@@ -59,7 +62,6 @@ const logIn = () => {
         />
       </View>
 
-      {/* <<< REPLACED <Button> WITH <TouchableOpacity> >>> */}
       <TouchableOpacity
         style={styles.button}
         onPress={signInWithEmail}
@@ -75,10 +77,8 @@ const logIn = () => {
       <Text style={styles.secondaryText}>
         Don't have an account?{" "}
         <Text
-          onPress={() => {
-            router.navigate("/(auth)/signUp"); // <<< Assumed route name
-          }}
-          style={styles.linkText} // <<< STYLE
+          onPress={() => router.navigate("/(auth)/signUp")}
+          style={styles.linkText}
         >
           Sign up
         </Text>
@@ -93,55 +93,72 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    padding: 20,
-    backgroundColor: "#171717", // <<< Core background
+    padding: 30,
+    backgroundColor: "#FFF5F9", // Pastel Pink
+  },
+  headerContainer: {
+    alignItems: "center",
+    marginBottom: 40,
+  },
+  logoText: {
+    fontFamily: "SemiBold",
+    color: "#8CD9B1",
+    fontSize: 40,
+    marginBottom: 10,
   },
   title: {
-    fontFamily: "SemiBold", // <<< Custom font
-    color: "white",
-    fontSize: 32,
+    fontFamily: "Regular",
+    color: "#8CD9B1", // Matching the green theme
+    fontSize: 18,
     textAlign: "center",
-    marginBottom: 40,
   },
   inputContainer: {
     width: "100%",
   },
   input: {
-    backgroundColor: "#242424", // <<< Secondary background
-    borderColor: "rgba(77, 61, 61, 0.50)", // <<< Signature border
-    borderWidth: 1,
-    borderRadius: 20, // <<< Rounded corners
-    height: 50,
+    backgroundColor: "#FFFFFF", // Pure white input
+    borderRadius: 12, // Rounded corners like image
+    height: 55,
     paddingHorizontal: 20,
-    color: "white", // <<< Text color
-    fontFamily: "Regular", // <<< Custom font
+    color: "#333", // Dark text
+    fontFamily: "Regular",
     fontSize: 16,
     marginBottom: 15,
+    borderWidth: 0, // Removing border for cleaner look
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
   },
   button: {
-    backgroundColor: "#3ECF8E", // <<< Primary accent
+    backgroundColor: "#8CD9B1", // Mint Green
     width: "100%",
-    height: 50,
-    borderRadius: 20,
+    height: 55,
+    borderRadius: 15,
     justifyContent: "center",
     alignItems: "center",
     marginTop: 10,
+    shadowColor: "#8CD9B1",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 5,
   },
   buttonText: {
-    fontFamily: "Regular", // <<< Custom font
+    fontFamily: "SemiBold",
     color: "white",
     fontSize: 18,
   },
   secondaryText: {
-    fontFamily: "Regular", // <<< Custom font
-    color: "#AAAAAA", // <<< Secondary text color
-    fontSize: 16,
+    fontFamily: "Regular",
+    color: "#888",
+    fontSize: 15,
     textAlign: "center",
-    marginTop: 20,
+    marginTop: 25,
   },
   linkText: {
-    fontFamily: "Regular", // <<< Custom font
-    color: "#3ECF8E", // <<< Primary accent
-    fontSize: 16,
+    fontFamily: "SemiBold",
+    color: "#8CD9B1",
   },
 });

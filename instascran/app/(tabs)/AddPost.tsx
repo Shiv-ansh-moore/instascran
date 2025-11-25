@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from "react-native";
-const index = () => {
+const AddPost = () => {
   return (
     <View>
-      <Text>index</Text>
+      <Text>AddPost</Text>
     </View>
   );
 };
-export default index;
+export default AddPost;
 const styles = StyleSheet.create({});

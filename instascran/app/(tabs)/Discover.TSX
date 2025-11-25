@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from "react-native";
-const index = () => {
+const Discover = () => {
   return (
     <View>
-      <Text>index</Text>
+      <Text>Discover</Text>
     </View>
   );
 };
-export default index;
+export default Discover;
 const styles = StyleSheet.create({});

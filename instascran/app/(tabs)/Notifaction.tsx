@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from "react-native";
-const index = () => {
+const Notifaction = () => {
   return (
     <View>
-      <Text>index</Text>
+      <Text>Notifaction</Text>
     </View>
   );
 };
-export default index;
+export default Notifaction;
 const styles = StyleSheet.create({});
