@@ -1,8 +1,7 @@
 import { FontAwesome } from "@expo/vector-icons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { Tabs } from "expo-router";
-
 
 const _layout = () => {
   return (
@@ -24,7 +23,17 @@ const _layout = () => {
           title: "Tasks",
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <MaterialIcons name="task" size={40} color={color}/>
+            <MaterialIcons name="task" size={40} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="discover"
+        options={{
+          title: "Discover",
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="task" size={40} color={color} />
           ),
         }}
       />
