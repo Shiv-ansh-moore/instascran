@@ -13,7 +13,6 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-// FIX 1: Use the new Safe Area Context
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   CameraView,
@@ -274,7 +273,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     padding: 20,
-    paddingTop: 20, // Adjusted for SafeAreaView
+    paddingTop: -35, 
   },
   bottomControls: {
     flexDirection: "row",
