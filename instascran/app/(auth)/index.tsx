@@ -49,20 +49,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "space-between", 
     padding: 30,
-    backgroundColor: "#FFEBFE", // Pastel Pink Background
+    backgroundColor: "#FFEBFE",
     paddingTop: 100,
     paddingBottom: 50,
   },
   logoContainer: {
     alignItems: "center",
     justifyContent: "center",
-    // I removed the rotation because the image usually looks better straight,
-    // but you can uncomment this if you want the image tilted:
-    // transform: [{ rotate: "-5deg" }], 
   },
   logoImage: {
-    width: 280,  // Adjust width based on how big you want it
-    height: 150, // Adjust height based on the image aspect ratio
+    width: 280, 
+    height: 150, 
   },
   contentContainer: {
     width: "100%",
