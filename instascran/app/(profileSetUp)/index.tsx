@@ -10,13 +10,13 @@ import {
   Platform,
   Text,
   ScrollView,
-  Image as RNImage, 
+  Image as RNImage,
 } from "react-native";
-import { Image } from "expo-image"; 
+import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { decode } from "base64-arraybuffer";
 import { supabase } from "../../lib/supabaseClient";
-import { AuthContext } from "../../providers/AuthProvider"; 
+import { AuthContext } from "../../providers/AuthProvider";
 
 interface ImageData {
   base64: string;
@@ -34,7 +34,7 @@ const CreateProfile = () => {
   const [loading, setLoading] = useState(false);
   const [signOutLoading, setSignOutLoading] = useState(false);
 
-  // --- Image Picker Logic (From Old App) ---
+  // --- Image Picker Logic ---
   const pickImage = async () => {
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
@@ -61,11 +61,11 @@ const CreateProfile = () => {
   async function makeAccount() {
     if (loading) return;
     if (!session?.user.id) return;
-    
+
     // Basic validation
     if (!username || username.length < 3) {
-        Alert.alert("Validation", "Username must be at least 3 characters.");
-        return;
+      Alert.alert("Validation", "Username must be at least 3 characters.");
+      return;
     }
 
     setLoading(true);
@@ -78,7 +78,7 @@ const CreateProfile = () => {
         const filePath = `${session.user.id}/${Date.now()}.${fileExt}`;
 
         const { error: uploadError } = await supabase.storage
-          .from("avatars") 
+          .from("avatars")
           .upload(filePath, decode(imageData.base64), {
             contentType: imageData.mimeType,
             upsert: true,
@@ -98,18 +98,14 @@ const CreateProfile = () => {
         updated_at: new Date().toISOString(),
       };
 
-      const { error } = await supabase
-        .from("profiles")
-        .upsert(updates);
+      const { error } = await supabase.from("profiles").upsert(updates);
 
       if (error) {
         throw error;
       } else {
         console.log("Profile created successfully!");
-
-        await refreshProfile(); 
+        await refreshProfile();
       }
-
     } catch (error: any) {
       console.error("Error creating profile:", error);
       if (error.code === "23505") {
@@ -140,40 +136,45 @@ const CreateProfile = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        
-        <Text style={styles.title}>Create Your Profile</Text>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <Text style={styles.title}>Setup Profile</Text>
 
         {/* --- Image Picker UI --- */}
         <View style={styles.imageContainer}>
-            <TouchableOpacity onPress={pickImage} style={styles.imageWrapper}>
-                {imageUri ? (
-                    <Image source={{ uri: imageUri }} style={styles.profileImage} />
-                ) : (
-                    <View style={styles.placeholderImage}>
-                        <Text style={styles.placeholderText}>+ Photo</Text>
-                    </View>
-                )}
-            </TouchableOpacity>
-            <Text style={styles.imageHint}>Tap to upload profile picture</Text>
+          <TouchableOpacity onPress={pickImage} style={styles.imageWrapper}>
+            {imageUri ? (
+              <RNImage source={{ uri: imageUri }} style={styles.profileImage} />
+            ) : (
+              <View style={styles.placeholderImage}>
+                <Text style={styles.plusIcon}>+</Text>
+              </View>
+            )}
+            <View style={styles.editBadge}>
+                <Text style={styles.editBadgeText}>📷</Text>
+            </View>
+          </TouchableOpacity>
+          <Text style={styles.imageHint}>Add a profile photo</Text>
         </View>
 
         {/* --- Inputs --- */}
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
-            placeholder="Username (unique)"
-            placeholderTextColor="rgba(255,255,255,0.5)"
+            placeholder="Username"
+            placeholderTextColor="#C4C4C4"
             autoCapitalize="none"
             autoCorrect={false}
             value={username}
             onChangeText={setUsername}
           />
-          
+
           <TextInput
             style={styles.input}
             placeholder="Full Name"
-            placeholderTextColor="rgba(255,255,255,0.5)"
+            placeholderTextColor="#C4C4C4"
             value={fullName}
             onChangeText={setFullName}
           />
@@ -181,7 +182,7 @@ const CreateProfile = () => {
           <TextInput
             style={[styles.input, styles.textArea]}
             placeholder="Bio (Optional)"
-            placeholderTextColor="rgba(255,255,255,0.5)"
+            placeholderTextColor="#C4C4C4"
             multiline={true}
             numberOfLines={3}
             value={bio}
@@ -191,7 +192,7 @@ const CreateProfile = () => {
           <TextInput
             style={styles.input}
             placeholder="Website (Optional)"
-            placeholderTextColor="rgba(255,255,255,0.5)"
+            placeholderTextColor="#C4C4C4"
             autoCapitalize="none"
             value={website}
             onChangeText={setWebsite}
@@ -218,7 +219,6 @@ const CreateProfile = () => {
             {signOutLoading ? "Signing out..." : "Sign Out"}
           </Text>
         </Text>
-
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -226,107 +226,137 @@ const CreateProfile = () => {
 
 export default CreateProfile;
 
+// --- STYLES ---
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#171717",
+    backgroundColor: "#FFF5F9", // Pastel Pink Background
   },
   scrollContent: {
     flexGrow: 1,
     justifyContent: "center",
-    padding: 20,
-    paddingTop: 60, 
+    padding: 30,
+    paddingTop: 60,
   },
   title: {
     fontFamily: "SemiBold",
-    color: "white",
+    color: "#8CD9B1", // Mint Green
     fontSize: 32,
     textAlign: "center",
-    marginBottom: 20,
+    marginBottom: 30,
   },
   imageContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 30,
   },
   imageWrapper: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: "rgba(77, 61, 61, 0.50)",
-    backgroundColor: "#242424",
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    // Soft shadow for the circle
+    shadowColor: "#FFF5F9",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 5,
+    backgroundColor: "white",
+    marginBottom: 10,
   },
   profileImage: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
+    borderRadius: 60,
   },
   placeholderImage: {
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: "#242424",
+    width: "100%",
+    height: "100%",
+    borderRadius: 60,
+    backgroundColor: "#F7F7F7", // Light Grey (No Border)
+    justifyContent: "center",
+    alignItems: "center",
   },
-  placeholderText: {
-    color: "#3ECF8E",
-    fontSize: 14,
-    fontWeight: 'bold',
+  plusIcon: {
+      fontSize: 40,
+      color: "#D1D1D1",
+      fontFamily: "SemiBold",
+      marginTop: -5
+  },
+  editBadge: {
+      position: 'absolute',
+      bottom: 0,
+      right: 0,
+      backgroundColor: "#8CD9B1",
+      width: 35,
+      height: 35,
+      borderRadius: 17.5,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderWidth: 3,
+      borderColor: '#FFF5F9' // Matches background to look like a cutout
+  },
+  editBadgeText: {
+      fontSize: 14
   },
   imageHint: {
-    color: "#AAAAAA",
-    fontSize: 12,
-    marginTop: 8,
+    fontFamily: "Regular",
+    color: "#888",
+    fontSize: 14,
   },
   // Form Styles
   inputContainer: {
     width: "100%",
   },
   input: {
-    backgroundColor: "#242424",
-    borderColor: "rgba(77, 61, 61, 0.50)",
-    borderWidth: 1,
-    borderRadius: 20,
-    height: 50,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 15,
+    height: 55,
     paddingHorizontal: 20,
-    color: "white",
+    color: "#333",
     fontFamily: "Regular",
     fontSize: 16,
     marginBottom: 15,
+    borderWidth: 0, // <--- EXPLICITLY REMOVED BORDER
+    // Soft Shadow to make white input pop against pink bg
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
   },
   textArea: {
     height: 100,
     paddingTop: 15,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
   },
   button: {
-    backgroundColor: "#3ECF8E",
+    backgroundColor: "#8CD9B1",
     width: "100%",
-    height: 50,
-    borderRadius: 20,
+    height: 55,
+    borderRadius: 15,
     justifyContent: "center",
     alignItems: "center",
     marginTop: 10,
+    shadowColor: "#8CD9B1",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 4,
   },
   buttonText: {
-    fontFamily: "Regular",
+    fontFamily: "SemiBold",
     color: "white",
     fontSize: 18,
-    fontWeight: '600',
   },
   secondaryText: {
     fontFamily: "Regular",
-    color: "#AAAAAA",
-    fontSize: 16,
+    color: "#888",
+    fontSize: 15,
     textAlign: "center",
-    marginTop: 20,
+    marginTop: 25,
     marginBottom: 30,
   },
   linkText: {
-    fontFamily: "Regular",
-    color: "#3ECF8E",
-    fontSize: 16,
+    fontFamily: "SemiBold",
+    color: "#8CD9B1",
   },
 });
