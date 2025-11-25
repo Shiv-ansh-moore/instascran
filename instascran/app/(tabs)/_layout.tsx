@@ -37,6 +37,16 @@ const _layout = () => {
           ),
         }}
       />
+      <Tabs.Screen
+        name="addPost"
+        options={{
+          title: "addPost",
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="task" size={40} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 };
