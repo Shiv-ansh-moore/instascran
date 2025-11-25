@@ -47,6 +47,26 @@ const _layout = () => {
           ),
         }}
       />
+      <Tabs.Screen
+        name="notifaction"
+        options={{
+          title: "notifaction",
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="task" size={40} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "profile",
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="task" size={40} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 };

@@ -15,12 +15,17 @@ import {
 } from "react-native";
 // FIX 1: Use the new Safe Area Context
 import { SafeAreaView } from "react-native-safe-area-context";
-import { CameraView, CameraType, FlashMode, useCameraPermissions } from "expo-camera";
+import {
+  CameraView,
+  CameraType,
+  FlashMode,
+  useCameraPermissions,
+} from "expo-camera";
 import { Ionicons } from "@expo/vector-icons";
 // FIX 3: Use the legacy import to silence the warning and ensure stability
-import * as FileSystem from "expo-file-system/legacy"; 
+import * as FileSystem from "expo-file-system/legacy";
 import { decode } from "base64-arraybuffer";
-import { supabase } from "@/lib/supabaseClient"; 
+import { supabase } from "@/lib/supabaseClient";
 import { AuthContext } from "@/providers/AuthProvider";
 
 const AddPost = () => {
@@ -31,7 +36,7 @@ const AddPost = () => {
   // Camera State
   const [facing, setFacing] = useState<CameraType>("back");
   const [flash, setFlash] = useState<FlashMode>("off");
-  
+
   // Post State
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [caption, setCaption] = useState("");
@@ -50,7 +55,7 @@ const AddPost = () => {
     if (cameraRef.current) {
       try {
         const photo = await cameraRef.current.takePictureAsync({
-            quality: 0.7, 
+          quality: 0.7,
         });
         if (photo?.uri) {
           setImageUri(photo.uri);
@@ -92,25 +97,22 @@ const AddPost = () => {
       if (uploadError) throw uploadError;
 
       // Get Public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from("posts")
-        .getPublicUrl(filePath);
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("posts").getPublicUrl(filePath);
 
       // Insert into Database
-      const { error: dbError } = await supabase
-        .from("posts")
-        .insert({
-          user_id: session.user.id,
-          image_url: publicUrl,
-          caption: caption.trim(),
-          location: "Unknown", 
-        });
+      const { error: dbError } = await supabase.from("posts").insert({
+        user_id: session.user.id,
+        image_url: publicUrl,
+        caption: caption.trim(),
+        location: "Unknown",
+      });
 
       if (dbError) throw dbError;
 
       Alert.alert("Success", "Post shared successfully!");
-      handleRetake(); 
-
+      handleRetake();
     } catch (error: any) {
       Alert.alert("Error", error.message || "Failed to post.");
     } finally {
@@ -120,11 +122,13 @@ const AddPost = () => {
 
   // --- Render Permissions ---
   if (!permission) return <View style={styles.container} />;
-  
+
   if (!permission.granted) {
     return (
       <View style={styles.permissionContainer}>
-        <Text style={styles.permissionText}>We need camera access to take food snaps!</Text>
+        <Text style={styles.permissionText}>
+          We need camera access to take food snaps!
+        </Text>
         <TouchableOpacity onPress={requestPermission} style={styles.btnPrimary}>
           <Text style={styles.btnText}>Grant Permission</Text>
         </TouchableOpacity>
@@ -137,54 +141,54 @@ const AddPost = () => {
     return (
       <SafeAreaView style={styles.previewContainer}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <KeyboardAvoidingView 
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                style={{ flex: 1 }}
-            >
-                <View style={styles.previewContent}>
-                    {/* Header */}
-                    <View style={styles.previewHeader}>
-                        <TouchableOpacity onPress={handleRetake} disabled={isUploading}>
-                            <Ionicons name="arrow-back" size={28} color="#333" />
-                        </TouchableOpacity>
-                        <Text style={styles.headerTitle}>New Post</Text>
-                        <View style={{ width: 28 }} /> 
-                    </View>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={{ flex: 1 }}
+          >
+            <View style={styles.previewContent}>
+              {/* Header */}
+              <View style={styles.previewHeader}>
+                <TouchableOpacity onPress={handleRetake} disabled={isUploading}>
+                  <Ionicons name="arrow-back" size={28} color="#333" />
+                </TouchableOpacity>
+                <Text style={styles.headerTitle}>New Post</Text>
+                <View style={{ width: 28 }} />
+              </View>
 
-                    {/* Image Preview */}
-                    <Image source={{ uri: imageUri }} style={styles.finalImage} />
+              {/* Image Preview */}
+              <Image source={{ uri: imageUri }} style={styles.finalImage} />
 
-                    {/* Input Section */}
-                    <View style={styles.inputSection}>
-                        <View style={styles.captionContainer}>
-                            <TextInput
-                                style={styles.captionInput}
-                                placeholder="Write a caption..."
-                                placeholderTextColor="#999"
-                                multiline
-                                value={caption}
-                                onChangeText={setCaption}
-                                maxLength={2200}
-                            />
-                        </View>
-                    </View>
-
-                    {/* Post Button */}
-                    <View style={styles.footer}>
-                        <TouchableOpacity 
-                            style={[styles.btnPrimary, isUploading && styles.btnDisabled]} 
-                            onPress={handlePost}
-                            disabled={isUploading}
-                        >
-                            {isUploading ? (
-                                <ActivityIndicator color="white" />
-                            ) : (
-                                <Text style={styles.btnText}>Share Post</Text>
-                            )}
-                        </TouchableOpacity>
-                    </View>
+              {/* Input Section */}
+              <View style={styles.inputSection}>
+                <View style={styles.captionContainer}>
+                  <TextInput
+                    style={styles.captionInput}
+                    placeholder="Write a caption..."
+                    placeholderTextColor="#999"
+                    multiline
+                    value={caption}
+                    onChangeText={setCaption}
+                    maxLength={2200}
+                  />
                 </View>
-            </KeyboardAvoidingView>
+              </View>
+
+              {/* Post Button */}
+              <View style={styles.footer}>
+                <TouchableOpacity
+                  style={[styles.btnPrimary, isUploading && styles.btnDisabled]}
+                  onPress={handlePost}
+                  disabled={isUploading}
+                >
+                  {isUploading ? (
+                    <ActivityIndicator color="white" />
+                  ) : (
+                    <Text style={styles.btnText}>Share Post</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+          </KeyboardAvoidingView>
         </TouchableWithoutFeedback>
       </SafeAreaView>
     );
@@ -194,42 +198,43 @@ const AddPost = () => {
   // FIX 2: Structure changed. CameraView is a sibling to the overlay, not a parent.
   return (
     <View style={styles.container}>
-      <CameraView 
-        style={styles.camera} 
-        facing={facing} 
-        flash={flash} 
+      <CameraView
+        style={styles.camera}
+        facing={facing}
+        flash={flash}
         ref={cameraRef}
       />
-      
+
       {/* Controls Overlay (Sits ON TOP of camera) */}
       <SafeAreaView style={styles.cameraOverlay}>
-          
-          {/* Top Bar */}
-          <View style={styles.topControls}>
-              <TouchableOpacity onPress={toggleFlash} style={styles.iconButton}>
-                  <Ionicons 
-                      name={flash === 'on' ? "flash" : "flash-off"} 
-                      size={28} 
-                      color={flash === 'on' ? "#FFD700" : "white"} 
-                  />
-              </TouchableOpacity>
-          </View>
+        {/* Top Bar */}
+        <View style={styles.topControls}>
+          <TouchableOpacity onPress={toggleFlash} style={styles.iconButton}>
+            <Ionicons
+              name={flash === "on" ? "flash" : "flash-off"}
+              size={28}
+              color={flash === "on" ? "#FFD700" : "white"}
+            />
+          </TouchableOpacity>
+        </View>
 
-          {/* Bottom Bar */}
-          <View style={styles.bottomControls}>
-              <View style={styles.spacer} />
-              
-              {/* Shutter Button */}
-              <TouchableOpacity onPress={takePicture} style={styles.shutterOuter}>
-                  <View style={styles.shutterInner} />
-              </TouchableOpacity>
+        {/* Bottom Bar */}
+        <View style={styles.bottomControls}>
+          <View style={styles.spacer} />
 
-              {/* Flip Camera */}
-              <TouchableOpacity onPress={toggleCameraFacing} style={styles.iconButton}>
-                  <Ionicons name="camera-reverse" size={30} color="white" />
-              </TouchableOpacity>
-          </View>
+          {/* Shutter Button */}
+          <TouchableOpacity onPress={takePicture} style={styles.shutterOuter}>
+            <View style={styles.shutterInner} />
+          </TouchableOpacity>
 
+          {/* Flip Camera */}
+          <TouchableOpacity
+            onPress={toggleCameraFacing}
+            style={styles.iconButton}
+          >
+            <Ionicons name="camera-reverse" size={30} color="white" />
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
     </View>
   );
@@ -255,88 +260,88 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: "#333",
   },
-  
+
   // Camera Styles
   camera: {
     flex: 1,
   },
   cameraOverlay: {
     ...StyleSheet.absoluteFillObject, // FIX 2: This makes the overlay cover the entire screen
-    justifyContent: 'space-between',
-    backgroundColor: 'transparent',
+    justifyContent: "space-between",
+    backgroundColor: "transparent",
   },
   topControls: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
+    flexDirection: "row",
+    justifyContent: "flex-start",
     padding: 20,
     paddingTop: 20, // Adjusted for SafeAreaView
   },
   bottomControls: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 40,
     paddingBottom: 20, // Adjusted for SafeAreaView
   },
   spacer: {
-    width: 30, 
+    width: 30,
   },
   iconButton: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0,0,0,0.3)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   shutterOuter: {
     width: 80,
     height: 80,
     borderRadius: 40,
     borderWidth: 5,
-    borderColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderColor: "white",
+    justifyContent: "center",
+    alignItems: "center",
   },
   shutterInner: {
     width: 65,
     height: 65,
     borderRadius: 32.5,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
 
   // Preview / Post Screen Styles
   previewContainer: {
     flex: 1,
-    backgroundColor: "#FFF5F9", 
+    backgroundColor: "#FFF5F9",
   },
   previewContent: {
     flex: 1,
     paddingHorizontal: 20,
   },
   previewHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingVertical: 15,
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
   },
   finalImage: {
-    width: '100%',
+    width: "100%",
     height: 400,
     borderRadius: 20,
     marginTop: 10,
-    backgroundColor: '#eee',
+    backgroundColor: "#eee",
   },
   inputSection: {
     marginTop: 20,
   },
   captionContainer: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 15,
     padding: 15,
     shadowColor: "#000",
@@ -347,20 +352,20 @@ const styles = StyleSheet.create({
   },
   captionInput: {
     fontSize: 16,
-    color: '#333',
+    color: "#333",
     minHeight: 60,
   },
   footer: {
     marginTop: 30,
-    alignItems: 'center',
+    alignItems: "center",
   },
   btnPrimary: {
-    backgroundColor: "#8CD9B1", 
+    backgroundColor: "#8CD9B1",
     paddingVertical: 15,
     paddingHorizontal: 40,
     borderRadius: 30,
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
     shadowColor: "#8CD9B1",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
